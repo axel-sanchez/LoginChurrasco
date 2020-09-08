@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LoginChurrasco</string>
+    <string name="pie_de_pagina">web services under your control</string>
+    <string name="remember">remember</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="log_in">Log in</string>
+</resources>
