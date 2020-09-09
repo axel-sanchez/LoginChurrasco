@@ -58,16 +58,11 @@ class LoginFragment: BaseFragment() {
 
         val tokenObserver = Observer<String?> {
             it?.let {
-                token = it
-                (activity as INavigationHost).replaceTo(SitiesFragment(), false)
+                (activity as INavigationHost).navigateTo(SitiesFragment.newInstance(it), false)
             }?: kotlin.run {
                 Toast.makeText(context, "Datos incorrectos, intente nuevamente", Toast.LENGTH_LONG).show()
             }
         }
         viewModel.getTokenLiveData().observe(viewLifecycleOwner, tokenObserver)
-    }
-
-    companion object{
-        var token = ""
     }
 }

@@ -29,7 +29,6 @@ class ConnectToApi(private var service: ApiService) {
         if (response.isSuccessful) {
             var body = response.body()
             mutableLiveData.postValue(body)
-            println("Tiene ${response.body()?.sites?.size} sities")
         } else {
             mutableLiveData.postValue(null)
             println("Sities: Falló la api que trae las sities")

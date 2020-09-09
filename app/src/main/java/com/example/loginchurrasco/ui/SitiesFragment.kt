@@ -21,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
+const val ARG_TOKEN = "token"
 /**
  * Fragment encargado de mostrar los sitios de interés
  * @author Axel Sanchez
@@ -37,6 +38,15 @@ class SitiesFragment : BaseFragment() {
     private var fragmentSitiesBinding: FragmentSitiesBinding? = null
     private val binding get() = fragmentSitiesBinding!!
 
+    lateinit var token: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            token = it.getString(ARG_TOKEN)?.let { auth -> auth }?:""
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentSitiesBinding = FragmentSitiesBinding.inflate(inflater, container, false)
         return binding.root
@@ -51,10 +61,13 @@ class SitiesFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         GlobalScope.launch {
-            viewModel.getSities(LoginFragment.token)
+            viewModel.getSities(token)
         }
 
         val sitiesObserver = Observer<Sities?> {
+            binding.loading.cancelAnimation()
+            binding.loading.showView(false)
+            binding.recyclerview.showView(true)
             setAdapter(it?.let { it.sites }?: listOf())
         }
         viewModel.getSitiesLiveData().observe(viewLifecycleOwner, sitiesObserver)
@@ -79,6 +92,17 @@ class SitiesFragment : BaseFragment() {
     }
 
     private fun itemClick(site: Site) {
-        //(activity as INavigationHost).replaceTo(DetailsFragment(), false)
+        (activity as INavigationHost).replaceTo(DetailsFragment.newInstance(site), true)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun newInstance(token: String) =
+            SitiesFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_TOKEN, token)
+                }
+            }
     }
 }
