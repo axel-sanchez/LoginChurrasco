@@ -17,6 +17,6 @@ interface ApiService {
     @POST("auth")
     suspend fun getAuth(@Body body: MyBody, @Header("Content-Type") contentType: String): Response<String?>
 
-    @GET("auth")
-    suspend fun getSities(@Body body: MyBody, @Header("Content-Type") contentType: String): Response<Sities?>
+    @GET("sites")
+    suspend fun getSities(@Header("Content-Type") contentType: String, @Header("Authorization") token: String): Response<Sities?>
 }

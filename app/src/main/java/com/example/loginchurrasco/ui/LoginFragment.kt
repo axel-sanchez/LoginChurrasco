@@ -1,10 +1,13 @@
 package com.example.loginchurrasco.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.loginchurrasco.databinding.FragmentLoginBinding
@@ -15,6 +18,7 @@ import com.example.loginchurrasco.viewmodel.LoginViewModelFactory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+
 
 /**
  * Primer fragment en mostrarse en la aplicacion, requiere de credenciales para poder iniciar sesión
@@ -43,6 +47,10 @@ class LoginFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.logIn.setOnClickListener {
+            binding.password.requestFocus()
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.password.windowToken, 0)
+
             GlobalScope.launch {
                 viewModel.getToken(binding.user.text.toString(), binding.password.text.toString())
             }
@@ -50,11 +58,16 @@ class LoginFragment: BaseFragment() {
 
         val tokenObserver = Observer<String?> {
             it?.let {
-                Toast.makeText(context, "Login Succesfull", Toast.LENGTH_LONG).show() }
-            ?: kotlin.run {
+                token = it
                 (activity as INavigationHost).replaceTo(SitiesFragment(), false)
+            }?: kotlin.run {
+                Toast.makeText(context, "Datos incorrectos, intente nuevamente", Toast.LENGTH_LONG).show()
             }
         }
         viewModel.getTokenLiveData().observe(viewLifecycleOwner, tokenObserver)
+    }
+
+    companion object{
+        var token = ""
     }
 }

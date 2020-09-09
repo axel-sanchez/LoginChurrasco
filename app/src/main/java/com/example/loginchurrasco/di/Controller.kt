@@ -3,7 +3,9 @@ package com.example.loginchurrasco.di
 import com.example.loginchurrasco.data.service.ApiService
 import com.example.loginchurrasco.data.service.ConnectToApi
 import com.example.loginchurrasco.domain.LoginUseCase
+import com.example.loginchurrasco.domain.SitiesUseCase
 import com.example.loginchurrasco.viewmodel.LoginViewModelFactory
+import com.example.loginchurrasco.viewmodel.SitiesViewModelFactory
 import org.koin.dsl.module.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,4 +25,6 @@ val moduleApp = module {
     single { ConnectToApi(get()) }
     single { LoginUseCase() }
     single { LoginViewModelFactory(get()) }
+    single { SitiesUseCase() }
+    single { SitiesViewModelFactory(get()) }
 }
