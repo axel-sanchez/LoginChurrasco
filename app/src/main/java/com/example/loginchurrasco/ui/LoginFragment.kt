@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.loginchurrasco.R
 import com.example.loginchurrasco.databinding.FragmentLoginBinding
 import com.example.loginchurrasco.ui.customs.BaseFragment
 import com.example.loginchurrasco.ui.interfaces.INavigationHost
@@ -58,7 +59,14 @@ class LoginFragment: BaseFragment() {
 
         val tokenObserver = Observer<String?> {
             it?.let {
-                (activity as INavigationHost).navigateTo(SitiesFragment.newInstance(it), false)
+                if(binding.remember.isChecked){
+                    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return@Observer
+                    with (sharedPref.edit()) {
+                        putString(getString(R.string.preference_token), it)
+                        commit()
+                    }
+                }
+                (activity as INavigationHost).navigateTo(SitiesFragment(), false)
             }?: kotlin.run {
                 Toast.makeText(context, "Datos incorrectos, intente nuevamente", Toast.LENGTH_LONG).show()
             }

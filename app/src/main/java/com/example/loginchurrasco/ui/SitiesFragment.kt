@@ -1,5 +1,6 @@
 package com.example.loginchurrasco.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 const val ARG_TOKEN = "token"
+
 /**
  * Fragment encargado de mostrar los sitios de interés
  * @author Axel Sanchez
@@ -30,7 +32,12 @@ class SitiesFragment : BaseFragment() {
     override fun onBackPressFragment() = false
 
     private val viewModelFactory: SitiesViewModelFactory by inject()
-    private val viewModel: SitiesViewModel by lazy { ViewModelProviders.of(requireActivity(), viewModelFactory).get(SitiesViewModel::class.java) }
+    private val viewModel: SitiesViewModel by lazy {
+        ViewModelProviders.of(
+            requireActivity(),
+            viewModelFactory
+        ).get(SitiesViewModel::class.java)
+    }
 
     private lateinit var viewAdapter: SitiesAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -42,12 +49,17 @@ class SitiesFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            token = it.getString(ARG_TOKEN)?.let { auth -> auth }?:""
-        }
+
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+
+        token = sharedPref?.getString("preference_token", "")?: ""
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         fragmentSitiesBinding = FragmentSitiesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -68,7 +80,7 @@ class SitiesFragment : BaseFragment() {
             binding.loading.cancelAnimation()
             binding.loading.showView(false)
             binding.recyclerview.showView(true)
-            setAdapter(it?.let { it.sites }?: listOf())
+            setAdapter(it?.let { it.sites } ?: listOf())
         }
         viewModel.getSitiesLiveData().observe(viewLifecycleOwner, sitiesObserver)
     }
@@ -93,16 +105,5 @@ class SitiesFragment : BaseFragment() {
 
     private fun itemClick(site: Site) {
         (activity as INavigationHost).replaceTo(DetailsFragment.newInstance(site), true)
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(token: String) =
-            SitiesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_TOKEN, token)
-                }
-            }
     }
 }

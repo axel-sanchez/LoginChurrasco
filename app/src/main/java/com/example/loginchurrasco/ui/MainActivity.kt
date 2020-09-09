@@ -1,6 +1,7 @@
 package com.example.loginchurrasco.ui
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
@@ -24,8 +25,16 @@ class MainActivity : AppCompatActivity(), INavigationHost {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
+            val sharedPref = getPreferences(Context.MODE_PRIVATE)
 
-            replaceTo(LoginFragment(), false)
+            var preferenceToken = sharedPref.getString("preference_token", "")
+
+            preferenceToken?.let { token ->
+
+                if (token.isNotEmpty()) replaceTo(SitiesFragment(), false)
+                else replaceTo(LoginFragment(), false)
+
+            } ?: replaceTo(LoginFragment(), false)
         }
     }
 
@@ -38,7 +47,12 @@ class MainActivity : AppCompatActivity(), INavigationHost {
 
         val transaction = supportFragmentManager
             .beginTransaction()
-            .setCustomAnimations(R.anim.enter_right_to_left, R.anim.exit_right_to_left, R.anim.enter_left_to_right, R.anim.exit_left_to_right)
+            .setCustomAnimations(
+                R.anim.enter_right_to_left,
+                R.anim.exit_right_to_left,
+                R.anim.enter_left_to_right,
+                R.anim.exit_left_to_right
+            )
             .add(R.id.container, fragment)
         if (addToBackstack) {
             transaction.addToBackStack(null)
@@ -50,7 +64,12 @@ class MainActivity : AppCompatActivity(), INavigationHost {
 
         val transaction = supportFragmentManager
             .beginTransaction()
-            .setCustomAnimations(R.anim.enter_right_to_left, R.anim.exit_right_to_left, R.anim.enter_left_to_right, R.anim.exit_left_to_right)
+            .setCustomAnimations(
+                R.anim.enter_right_to_left,
+                R.anim.exit_right_to_left,
+                R.anim.enter_left_to_right,
+                R.anim.exit_left_to_right
+            )
             .replace(R.id.container, fragment)
 
         if (addToBackstack) {
@@ -74,7 +93,7 @@ class MainActivity : AppCompatActivity(), INavigationHost {
             } else {
                 super.onBackPressed()
             }
-        } else{
+        } else {
             if (tiempoPrimerClick + INTERVAL > System.currentTimeMillis()) {
                 super.finish()
                 return
