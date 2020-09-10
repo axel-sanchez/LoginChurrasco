@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.loginchurrasco.aplication.MyApplication
 import com.example.loginchurrasco.data.models.Site
+import com.example.loginchurrasco.data.models.Ubicacion
 import com.example.loginchurrasco.databinding.FragmentDetailsBinding
 import com.example.loginchurrasco.ui.customs.BaseFragment
 
@@ -32,7 +33,11 @@ class DetailsFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         fragmentDetailsBinding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,27 +45,58 @@ class DetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        site?.let {site ->
+        site?.let { site ->
             binding.nombre.text = site.nombre
             binding.description.text = site.descripcion
-            Glide.with(context?.let { context -> context }?:MyApplication().applicationContext)
+            Glide.with(context?.let { context -> context } ?: MyApplication().applicationContext)
                 .load(site.url_imagen)
                 .into(binding.image)
 
-            var ubicacion = site.ubicacion.toString()
-            var coma = ubicacion.indexOf(',')
-            println("ubicacion: $ubicacion")
-            println("Lat: ${ubicacion.subSequence(coma+8, ubicacion.length-1)}")
-            println("Lon: ${ubicacion.subSequence(7, coma)}")
+            var ubicacionStr = site.ubicacion.toString().let { it.substring(1, it.length - 1) }
 
-            binding.btnVideo.setOnClickListener {
-                val intent = Intent(context, MapsActivity::class.java).apply {
-                    //putExtra("lat", site.ubicacion?._lat)
-                    //putExtra("lon", site.ubicacion?._long)
+            var ubicacion = getUbicacion(ubicacionStr)
+
+            if(ubicacion.lat != "" && ubicacion.long != ""){
+                binding.btnVideo.visibility = View.VISIBLE
+                binding.btnVideo.setOnClickListener {
+                    println("latitud: ${ubicacion.lat}")
+                    println("longitud: ${ubicacion.long}")
+                    val intent = Intent(context, MapsActivity::class.java).apply {
+                        putExtra("lat", ubicacion.lat)
+                        putExtra("lon", ubicacion.long)
+                    }
+                    startActivity(intent)
                 }
-                startActivity(intent)
+            } else{
+                binding.btnVideo.visibility = View.GONE
             }
         }
+    }
+
+    fun getUbicacion(cadena: String): Ubicacion {
+        var coma = cadena.indexOf(',')
+
+        var latitud = ""
+        var longitud = ""
+
+        var firstSecuence = cadena.substring(0, coma + 1)
+        var secondSecuence = cadena.substring(coma + 1, cadena.length)
+        if (firstSecuence.indexOf("lat") != 1) {
+            latitud = getValue(firstSecuence)
+            longitud = getValue(secondSecuence)
+        } else if (firstSecuence.indexOf("lon") != 1) {
+            latitud = getValue(secondSecuence)
+            longitud = getValue(firstSecuence)
+        }
+
+        return Ubicacion(longitud, latitud)
+    }
+
+    fun getValue(cadena: String): String {
+        var coma = cadena.indexOf(',')
+        var igual = cadena.indexOf('=')
+        return if (coma != -1) cadena.substring(igual + 1, coma)
+        else cadena.substring(igual + 1, cadena.length)
     }
 
     override fun onDestroyView() {

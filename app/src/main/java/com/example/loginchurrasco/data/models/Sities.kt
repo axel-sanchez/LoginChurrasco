@@ -86,15 +86,15 @@ data class Detalle(
     }
 }
 
-data class Ubicacion(val _long: String, val _lat: String): Parcelable {
+data class Ubicacion(var long: String, var lat: String): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()?.let { it }?:"",
         parcel.readString()?.let { it }?:""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(_long)
-        parcel.writeString(_lat)
+        parcel.writeString(long)
+        parcel.writeString(lat)
     }
 
     override fun describeContents(): Int {

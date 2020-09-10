@@ -15,11 +15,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    //var lat = intent.getStringExtra("lat")
-    //var lon = intent.getStringExtra("lon")
+    private var lat: String? = null
+    private var lon: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lat = intent.getStringExtra("lat")
+        lon = intent.getStringExtra("lon")
+
         setContentView(R.layout.activity_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -39,9 +43,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        /*val sydney = LatLng(lat.toDouble(), lon.toDouble())
-        mMap.addMarker(MarkerOptions().position(sydney).title("Sitio de interés"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
+        if(lat != null && lon != null){
+            // Add a marker in Sydney and move the camera
+            val sydney = LatLng(lat!!.toDouble(), lon!!.toDouble())
+            mMap.addMarker(MarkerOptions().position(sydney).title("Sitio de interés"))
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        }
     }
 }
