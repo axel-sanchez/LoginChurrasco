@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -49,17 +50,11 @@ class SitiesFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-
         token = sharedPref?.getString("preference_token", "")?: ""
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentSitiesBinding = FragmentSitiesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -67,6 +62,16 @@ class SitiesFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         fragmentSitiesBinding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity).supportActionBar?.show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,6 +109,6 @@ class SitiesFragment : BaseFragment() {
     }
 
     private fun itemClick(site: Site) {
-        (activity as INavigationHost).replaceTo(DetailsFragment.newInstance(site), true)
+        (activity as INavigationHost).navigateTo(DetailsFragment.newInstance(site), true)
     }
 }
