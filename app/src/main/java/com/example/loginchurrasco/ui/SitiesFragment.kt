@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.loginchurrasco.R
 import com.example.loginchurrasco.data.models.Site
 import com.example.loginchurrasco.data.models.Sities
 import com.example.loginchurrasco.databinding.FragmentSitiesBinding
@@ -33,12 +35,7 @@ class SitiesFragment : BaseFragment() {
     override fun onBackPressFragment() = false
 
     private val viewModelFactory: SitiesViewModelFactory by inject()
-    private val viewModel: SitiesViewModel by lazy {
-        ViewModelProviders.of(
-            requireActivity(),
-            viewModelFactory
-        ).get(SitiesViewModel::class.java)
-    }
+    private val viewModel: SitiesViewModel by lazy { ViewModelProviders.of(requireActivity(), viewModelFactory).get(SitiesViewModel::class.java) }
 
     private lateinit var viewAdapter: SitiesAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -46,12 +43,17 @@ class SitiesFragment : BaseFragment() {
     private var fragmentSitiesBinding: FragmentSitiesBinding? = null
     private val binding get() = fragmentSitiesBinding!!
 
-    lateinit var token: String
+    private lateinit var token: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
         token = sharedPref?.getString("preference_token", "")?: ""
+
+        /*binding.toolbar.menu.findItem(R.id.action_add).setOnMenuItemClickListener {
+            Toast.makeText(context, "Agregar un sitio", Toast.LENGTH_SHORT).show()
+            false
+        }*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,16 +68,21 @@ class SitiesFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as AppCompatActivity).supportActionBar?.show()
+        (activity as AppCompatActivity).supportActionBar?.hide()
     }
 
     override fun onStop() {
         super.onStop()
-        (activity as AppCompatActivity).supportActionBar?.show()
+        (activity as AppCompatActivity).supportActionBar?.hide()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.toolbar.menu.findItem(R.id.action_add).setOnMenuItemClickListener {
+            Toast.makeText(context, "Agregando un sitio", Toast.LENGTH_SHORT).show()
+            false
+        }
 
         GlobalScope.launch {
             viewModel.getSities(token)
