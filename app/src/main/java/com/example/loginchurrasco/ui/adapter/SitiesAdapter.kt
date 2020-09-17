@@ -22,7 +22,7 @@ class SitiesAdapter(
             binding.image.setOnClickListener { itemClick(item) }
             binding.title.setOnClickListener { itemClick(item) }
 
-            item?.let{ site ->
+            item.let{ site ->
                 site.url_imagen?.let { urlImage ->
                     if( urlImage.isNotEmpty()){
                         Glide.with(itemView.context)

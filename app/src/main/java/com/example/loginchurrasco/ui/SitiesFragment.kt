@@ -1,14 +1,18 @@
 package com.example.loginchurrasco.ui
 
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.loginchurrasco.R
@@ -49,11 +53,6 @@ class SitiesFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
         token = sharedPref?.getString("preference_token", "")?: ""
-
-        /*binding.toolbar.menu.findItem(R.id.action_add).setOnMenuItemClickListener {
-            Toast.makeText(context, "Agregar un sitio", Toast.LENGTH_SHORT).show()
-            false
-        }*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,15 +75,16 @@ class SitiesFragment : BaseFragment() {
         (activity as AppCompatActivity).supportActionBar?.hide()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toolbar.menu.findItem(R.id.action_add).setOnMenuItemClickListener {
-            Toast.makeText(context, "Agregando un sitio", Toast.LENGTH_SHORT).show()
+            (activity as INavigationHost).replaceTo(SiteNewFragment(), true)
             false
         }
 
-        GlobalScope.launch {
+        lifecycleScope.launch {
             viewModel.getSities(token)
         }
 

@@ -10,6 +10,7 @@ import com.example.loginchurrasco.aplication.MyApplication
 import com.example.loginchurrasco.data.models.Site
 import com.example.loginchurrasco.data.models.Ubicacion
 import com.example.loginchurrasco.databinding.FragmentDetailsBinding
+import com.example.loginchurrasco.helpers.LocationHelper
 import com.example.loginchurrasco.ui.customs.BaseFragment
 
 const val ARG_SITE = "site"
@@ -33,11 +34,7 @@ class DetailsFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentDetailsBinding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -54,11 +51,11 @@ class DetailsFragment : BaseFragment() {
 
             var ubicacionStr = site.ubicacion.toString().let { it.substring(1, it.length - 1) }
 
-            var ubicacion = getUbicacion(ubicacionStr)
+            var ubicacion = LocationHelper.getUbicacion(ubicacionStr)
 
             if(ubicacion.lat != "" && ubicacion.long != ""){
-                binding.btnVideo.visibility = View.VISIBLE
-                binding.btnVideo.setOnClickListener {
+                binding.btnUbicacion.visibility = View.VISIBLE
+                binding.btnUbicacion.setOnClickListener {
                     println("latitud: ${ubicacion.lat}")
                     println("longitud: ${ubicacion.long}")
                     val intent = Intent(context, MapsActivity::class.java).apply {
@@ -68,35 +65,9 @@ class DetailsFragment : BaseFragment() {
                     startActivity(intent)
                 }
             } else{
-                binding.btnVideo.visibility = View.GONE
+                binding.btnUbicacion.visibility = View.GONE
             }
         }
-    }
-
-    fun getUbicacion(cadena: String): Ubicacion {
-        var coma = cadena.indexOf(',')
-
-        var latitud = ""
-        var longitud = ""
-
-        var firstSecuence = cadena.substring(0, coma + 1)
-        var secondSecuence = cadena.substring(coma + 1, cadena.length)
-        if (firstSecuence.indexOf("lat") != 1) {
-            latitud = getValue(firstSecuence)
-            longitud = getValue(secondSecuence)
-        } else if (firstSecuence.indexOf("lon") != 1) {
-            latitud = getValue(secondSecuence)
-            longitud = getValue(firstSecuence)
-        }
-
-        return Ubicacion(longitud, latitud)
-    }
-
-    fun getValue(cadena: String): String {
-        var coma = cadena.indexOf(',')
-        var igual = cadena.indexOf('=')
-        return if (coma != -1) cadena.substring(igual + 1, coma)
-        else cadena.substring(igual + 1, cadena.length)
     }
 
     override fun onDestroyView() {

@@ -2,22 +2,29 @@ package com.example.loginchurrasco.data.service
 
 import androidx.lifecycle.MutableLiveData
 import com.example.loginchurrasco.data.models.MyBody
+import com.example.loginchurrasco.data.models.Site
 import com.example.loginchurrasco.data.models.Sities
+import com.google.gson.JsonObject
+import org.json.JSONObject
+
+
+
 
 /**
  * Esta clase es la encargada de conectarse a las api's
  * @author Axel Sanchez
  */
 class ConnectToApi(private var service: ApiService) {
+
     suspend fun getAuth(email: String, password: String): MutableLiveData<String?> {
         var mutableLiveData = MutableLiveData<String?>()
         var response = service.getAuth(MyBody(email, password), "application/json")
         if (response.isSuccessful) {
-            mutableLiveData.postValue(response.body())
+            mutableLiveData.value = response.body()
             println("Token: ${response.body()}")
         }
         else {
-            mutableLiveData.postValue(null)
+            mutableLiveData.value = null
             println("Token: Falló la api de autenticación")
         }
         return mutableLiveData
@@ -28,10 +35,23 @@ class ConnectToApi(private var service: ApiService) {
         var response = service.getSities("application/json", "Bearer $token")
         if (response.isSuccessful) {
             var body = response.body()
-            mutableLiveData.postValue(body)
+            mutableLiveData.value = body
         } else {
-            mutableLiveData.postValue(null)
+            mutableLiveData.value = null
             println("Sities: Falló la api que trae las sities")
+        }
+        return mutableLiveData
+    }
+
+    suspend fun createSite(token: String, json: JSONObject): MutableLiveData<String?>{
+        var mutableLiveData = MutableLiveData<String?>()
+        var response = service.createSite(json, "application/json", "Bearer $token")
+        if (response.isSuccessful) {
+            var body = response.body()
+            mutableLiveData.value = body
+        } else {
+            mutableLiveData.value = null
+            println("Sities: Falló la api que crea una site")
         }
         return mutableLiveData
     }

@@ -8,19 +8,19 @@ data class Sities(
 )
 
 data class Site(
-    val descripcion: String,
-    val detalle: Detalle,
     val id: Int,
-    val image: String,
-    val name: String,
-    val nombre: String,
+    val descripcion: String?,
+    val detalle: Detalle?,
+    val image: String?,
+    val name: String?,
+    val nombre: String?,
     val ubicacion: Any?,
-    val url_imagen: String
+    var url_imagen: String?
 ): Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readInt(),
         parcel.readString()?.let { it }?:"",
         parcel.readParcelable(Detalle::class.java.classLoader)!!,
-        parcel.readInt(),
         parcel.readString()?.let { it }?:"",
         parcel.readString()?.let { it }?:"",
         parcel.readString()?.let { it }?:"",
@@ -29,10 +29,10 @@ data class Site(
         parcel.readString()?.let { it }?:"")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
         parcel.writeString(descripcion)
         parcel.writeParcelable(detalle, flags)
         //parcel.writeParcelable(ubicacion, flags)
-        parcel.writeInt(id)
         parcel.writeString(image)
         parcel.writeString(name)
         parcel.writeString(nombre)
