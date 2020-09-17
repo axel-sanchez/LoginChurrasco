@@ -30,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.loginchurrasco.data.TableSite
 import com.example.loginchurrasco.data.models.Detalle
 import com.example.loginchurrasco.data.models.Site
+import com.example.loginchurrasco.data.models.Ubicacion
 import com.example.loginchurrasco.data.repository.GenericRepository
 import com.example.loginchurrasco.databinding.FragmentSiteNewBinding
 import com.example.loginchurrasco.ui.customs.BaseFragment
@@ -116,20 +117,14 @@ class SiteNewFragment : BaseFragment() {
             description = binding.descripcion.text.toString()
             if (nombre.isNotEmpty() && description.isNotEmpty() && imagenBase64.isNotEmpty() && latitude != 0.0 && longitude != 0.0) {
 
-                lastId = repository.getSite(null, null, TableSite.Columns.COLUMN_NAME_ID).last().id
+                lastId = repository.getSite(null, null, TableSite.Columns.COLUMN_NAME_ID).first().id
 
-                val obj = JSONObject()
-                obj.put("id", lastId + 1)
-                obj.put("nombre", nombre)
-                obj.put("ubicacion", JSONObject().apply {
-                    put("_long", latitude)
-                    put("_lat", longitude)
-                })
-                obj.put("descripcion", description)
-                obj.put("image", imagenBase64)
+                println("el último id es: $lastId")
+
+                var newSite = Site(lastId + 1, description, null, imagenBase64, nombre, nombre, Ubicacion(longitude.toString(), latitude.toString()), null)
 
                 lifecycleScope.launch {
-                    viewModel.createSite(token, obj)
+                    viewModel.createSite(token, newSite)
                 }
             } else Toast.makeText(
                 context,

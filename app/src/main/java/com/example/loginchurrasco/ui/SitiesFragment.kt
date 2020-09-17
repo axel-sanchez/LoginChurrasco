@@ -116,6 +116,6 @@ class SitiesFragment : BaseFragment() {
     }
 
     private fun itemClick(site: Site) {
-        (activity as INavigationHost).navigateTo(DetailsFragment.newInstance(site), true)
+        (activity as INavigationHost).replaceTo(DetailsFragment.newInstance(site), true)
     }
 }

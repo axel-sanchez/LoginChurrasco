@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.loginchurrasco.aplication.MyApplication
 import com.example.loginchurrasco.data.models.Site
-import com.example.loginchurrasco.data.models.Ubicacion
 import com.example.loginchurrasco.databinding.FragmentDetailsBinding
 import com.example.loginchurrasco.helpers.LocationHelper
 import com.example.loginchurrasco.ui.customs.BaseFragment
@@ -53,14 +52,14 @@ class DetailsFragment : BaseFragment() {
 
             var ubicacion = LocationHelper.getUbicacion(ubicacionStr)
 
-            if(ubicacion.lat != "" && ubicacion.long != ""){
+            if(ubicacion._lat != "" && ubicacion._long != ""){
                 binding.btnUbicacion.visibility = View.VISIBLE
                 binding.btnUbicacion.setOnClickListener {
-                    println("latitud: ${ubicacion.lat}")
-                    println("longitud: ${ubicacion.long}")
+                    println("latitud: ${ubicacion._lat}")
+                    println("longitud: ${ubicacion._long}")
                     val intent = Intent(context, MapsActivity::class.java).apply {
-                        putExtra("lat", ubicacion.lat)
-                        putExtra("lon", ubicacion.long)
+                        putExtra("lat", ubicacion._lat)
+                        putExtra("lon", ubicacion._long)
                     }
                     startActivity(intent)
                 }

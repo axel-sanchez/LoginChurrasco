@@ -3,6 +3,7 @@ package com.example.loginchurrasco.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.loginchurrasco.data.models.Site
 import com.example.loginchurrasco.domain.SiteNewUseCase
 import com.google.gson.JsonObject
 import org.json.JSONObject
@@ -20,8 +21,8 @@ class SiteNewViewModel(private val siteNewUseCase: SiteNewUseCase) : ViewModel()
         listData.postValue(urlImage)
     }
 
-    suspend fun createSite(token: String, json: JSONObject) {
-        setListData(siteNewUseCase.createSite(token, json))
+    suspend fun createSite(token: String, site: Site) {
+        setListData(siteNewUseCase.createSite(token, site))
     }
 
     fun getUrlLiveData(): LiveData<String?> {

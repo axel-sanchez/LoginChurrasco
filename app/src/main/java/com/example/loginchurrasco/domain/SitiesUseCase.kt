@@ -37,7 +37,7 @@ class SitiesUseCase : KoinComponent {
                     }
 
                     var ubicacion = LocationHelper.getUbicacion(ubicacionStr)
-                    repository.insert(site, ubicacion.lat, ubicacion.long)
+                    repository.insert(site, ubicacion._lat, ubicacion._long)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

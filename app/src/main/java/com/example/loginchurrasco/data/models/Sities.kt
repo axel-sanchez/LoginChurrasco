@@ -10,9 +10,9 @@ data class Sities(
 data class Site(
     val id: Int,
     val descripcion: String?,
-    val detalle: Detalle?,
+    val detalle: Detalle? = null,
     val image: String?,
-    val name: String?,
+    val name: String? = null,
     val nombre: String?,
     val ubicacion: Any?,
     var url_imagen: String?
@@ -86,15 +86,15 @@ data class Detalle(
     }
 }
 
-data class Ubicacion(var long: String, var lat: String): Parcelable {
+data class Ubicacion(var _long: String, var _lat: String): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()?.let { it }?:"",
         parcel.readString()?.let { it }?:""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(long)
-        parcel.writeString(lat)
+        parcel.writeString(_long)
+        parcel.writeString(_lat)
     }
 
     override fun describeContents(): Int {

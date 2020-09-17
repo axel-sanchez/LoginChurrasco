@@ -43,15 +43,16 @@ class ConnectToApi(private var service: ApiService) {
         return mutableLiveData
     }
 
-    suspend fun createSite(token: String, json: JSONObject): MutableLiveData<String?>{
-        var mutableLiveData = MutableLiveData<String?>()
-        var response = service.createSite(json, "application/json", "Bearer $token")
+    suspend fun createSite(token: String, site: Site): MutableLiveData<Site?>{
+        var mutableLiveData = MutableLiveData<Site?>()
+        var response = service.createSite(site, "application/json", "Bearer $token")
         if (response.isSuccessful) {
             var body = response.body()
             mutableLiveData.value = body
         } else {
             mutableLiveData.value = null
             println("Sities: Falló la api que crea una site")
+            println("Razon del error: ${response.errorBody().toString()}")
         }
         return mutableLiveData
     }

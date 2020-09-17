@@ -1,10 +1,8 @@
 package com.example.loginchurrasco.data.service
 
-import com.example.loginchurrasco.data.models.MyAuth
 import com.example.loginchurrasco.data.models.MyBody
 import com.example.loginchurrasco.data.models.Site
 import com.example.loginchurrasco.data.models.Sities
-import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -23,5 +21,5 @@ interface ApiService {
     suspend fun getSities(@Header("Content-Type") contentType: String, @Header("Authorization") token: String): Response<Sities?>
 
     @POST("sites")
-    suspend fun createSite(@Body json: JSONObject, @Header("Content-Type") contentType: String, @Header("Authorization") token: String): Response<String?>
+    suspend fun createSite(@Body site: Site, @Header("Content-Type") contentType: String, @Header("Authorization") token: String): Response<Site?>
 }

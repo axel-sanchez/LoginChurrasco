@@ -1,9 +1,9 @@
 package com.example.loginchurrasco.domain
 
 import com.example.loginchurrasco.data.TableSite
+import com.example.loginchurrasco.data.models.Site
 import com.example.loginchurrasco.data.repository.GenericRepository
 import com.example.loginchurrasco.data.service.ConnectToApi
-import org.json.JSONObject
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
@@ -19,11 +19,11 @@ class SiteNewUseCase : KoinComponent {
      *
      * @return devuelve la url de la imagen
      */
-    suspend fun createSite(token: String, json: JSONObject): String? {
-        var urlImagen = api.createSite(token, json).value
-        var site = repository.getSite(null, null, TableSite.Columns.COLUMN_NAME_ID).last()
-        site.url_imagen = urlImagen?.let { it }?:""
-        repository.update(site)
-        return urlImagen
+    suspend fun createSite(token: String, site: Site): String? {
+        var site = api.createSite(token, site).value
+        var siteLocal = repository.getSite(null, null, TableSite.Columns.COLUMN_NAME_ID).last()
+        siteLocal.url_imagen = site?.let { it.url_imagen }?:""
+        repository.update(siteLocal)
+        return site?.url_imagen
     }
 }
